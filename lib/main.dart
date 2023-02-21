@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:toonsflix/screens/home_screen.dart';
-import 'package:toonsflix/services/api_service.dart';
 
 void main() {
-  ApiService().getTodaysToons();
+  //ApiService().getTodaysToons();
   runApp(const MyApp());
 }
 
@@ -27,7 +26,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: HomeScreen(),
     );
   }
 }
