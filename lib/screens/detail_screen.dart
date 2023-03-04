@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toonsflix/models/webtoon_detail_model.dart';
 import 'package:toonsflix/models/webtoon_episode_model.dart';
 import 'package:toonsflix/services/api_service.dart';
@@ -21,6 +22,23 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   late Future<WebtoonDetailModel> webtoon;
   late Future<List<WebtoonEpisodeModel>> episodes;
+  late SharedPreferences prefs;
+  bool isLiked = false;
+
+  Future initPrefs() async {
+    //사용자 저장소 생성
+    prefs = await SharedPreferences.getInstance();
+    final likeToons = prefs.getStringList("likedToons");
+    if (likeToons != null) {
+      if (likeToons.contains(widget.id) == true) {
+        setState(() {
+          isLiked = true;
+        });
+      }
+    } else {
+      await prefs.setStringList("likedToons", []);
+    }
+  }
 
   @override
   void initState() {
@@ -29,9 +47,24 @@ class _DetailScreenState extends State<DetailScreen> {
     //widget.id <====== StatefullWidget에서 접근하는 방식
     //state class에서 데이타를 받기위해
     episodes = ApiService.getLatestEpisodesById(widget.id);
+    initPrefs();
   }
 
   // = ApiService.getToondById(widget.id);
+  onHeartTap() async {
+    final likeToons = prefs.getStringList("likedToons");
+    if (likeToons != null) {
+      if (isLiked) {
+        likeToons.remove(widget.id);
+      } else {
+        likeToons.add(widget.id);
+      }
+      await prefs.setStringList('likeToons', likeToons);
+      setState(() {
+        isLiked = !isLiked;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +74,14 @@ class _DetailScreenState extends State<DetailScreen> {
         elevation: 4,
         backgroundColor: Colors.white,
         foregroundColor: Colors.green,
+        actions: [
+          IconButton(
+            onPressed: onHeartTap,
+            icon: Icon(
+              isLiked ? Icons.favorite : Icons.favorite_outline,
+            ),
+          ),
+        ],
         title: Center(
           child: Text(
             widget.title,

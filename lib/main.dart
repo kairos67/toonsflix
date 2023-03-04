@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:toonsflix/screens/home_screen.dart';
 
+// 방법 2. (global override)
+// [main.dart]
+// class MyHttpOverrides extends HttpOverrides {
+//   @override
+//   HttpClient createHttpClient(SecurityContext? context) {
+//     return super.createHttpClient(context)
+//       ..userAgent =
+//           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299';
+//   }
+// }
+
 void main() {
+  //HttpOverrides.global = MyHttpOverrides();
+
   //ApiService().getTodaysToons();
   runApp(const MyApp());
 }
